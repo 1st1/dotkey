@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PDF reference</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #000;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Renders one page of the exported PDF at the deck's exact pixel size, so a
+      screenshot of this page can be compared 1:1 against the React renderer.
+      Used only by scripts/verify.mjs; not part of the library.
+    -->
+    <script type="module">
+      import * as pdfjs from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.mjs';
+
+      pdfjs.GlobalWorkerOptions.workerSrc =
+        'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.worker.min.mjs';
+
+      const params = new URLSearchParams(location.search);
+      const file = params.get('file') ?? '/sample.pdf';
+      const pageNumber = Number(params.get('page') ?? '1');
+      const width = Number(params.get('width') ?? '1920');
+
+      const document_ = await pdfjs.getDocument(file).promise;
+      const page = await document_.getPage(pageNumber);
+      const base = page.getViewport({ scale: 1 });
+      const viewport = page.getViewport({ scale: width / base.width });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(viewport.width);
+      canvas.height = Math.round(viewport.height);
+      document.body.append(canvas);
+
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      window.pdfReady = { pages: document_.numPages, width: canvas.width, height: canvas.height };
+    </script>
+  </body>
+</html>

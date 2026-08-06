@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "types": [
+      "vite/client"
+    ],
+    "paths": {
+      "@dotkey/core/fonts": [
+        "../../packages/core/src/fonts/index.ts"
+      ],
+      "@dotkey/core/node": [
+        "../../packages/core/src/node.ts"
+      ],
+      "@dotkey/react": [
+        "../../packages/react/src/index.ts"
+      ],
+      "@dotkey/core": [
+        "../../packages/core/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "vite.config.ts"
+  ]
+}

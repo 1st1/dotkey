@@ -1,0 +1,77 @@
+{
+  "name": "@dotkey/core",
+  "version": "0.1.0",
+  "description": "Read Apple Keynote (.key) files. Parses the iWork format into a renderer-agnostic JSON document model.",
+  "keywords": [
+    "keynote",
+    "iwork",
+    "apple",
+    "presentation",
+    "slides",
+    "parser",
+    "iwa",
+    "protobuf",
+    "snappy",
+    "key"
+  ],
+  "license": "MIT",
+  "author": "Yury Selivanov",
+  "homepage": "https://github.com/1st1/dotkey#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1st1/dotkey.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/1st1/dotkey/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js",
+      "require": "./dist/node.cjs"
+    },
+    "./fonts": {
+      "types": "./dist/fonts.d.ts",
+      "import": "./dist/fonts.js",
+      "require": "./dist/fonts.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2",
+    "protobufjs": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.0"
+  }
+}

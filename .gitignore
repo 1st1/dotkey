@@ -1,0 +1,32 @@
+node_modules
+dist
+.scratch
+*.tsbuildinfo
+.claude
+.mcp.json
+
+# Presentations used for local testing are never committed: they are the
+# author's content, not the library's. Drop a .key anywhere in the repo and the
+# fixture-backed tests will pick it up. See README, "Testing with your own deck".
+*.key
+*.pdf
+
+# macOS clutter. Finder scatters these through any directory it has looked at,
+# and the AppleDouble `._*` forks appear whenever files cross a non-HFS volume
+# such as a USB stick or a network share.
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+.DocumentRevisions-V100
+.AppleDouble
+.AppleDB
+.AppleDesktop
+.LSOverride
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.apdisk
+
