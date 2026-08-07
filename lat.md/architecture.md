@@ -1,6 +1,6 @@
 # Architecture
 
-Read Apple Keynote `.key` files and render them in React. Two packages: a parser that turns a `.key` package into plain JSON, and a renderer that draws that JSON. The split is the central design decision — parsing has no opinion about rendering.
+Read Apple Keynote `.key` files and render them in React. Three packages separate parsing, rendering, and optional presentation chrome so the document model and renderer remain independent of any one viewer design.
 
 ## Pipeline
 
@@ -15,10 +15,11 @@ Six stages take a zip archive to pixels. Each stage is a directory in `packages/
 
 ## Packages
 
-`@dotkey/core` is isomorphic and has no React dependency; `@dotkey/react` is one consumer of the model, not a privileged one.
+`@dotkey/core` is isomorphic, `@dotkey/react` renders its model, and `@dotkey/vercel` is optional host chrome composed entirely from the public React API.
 
 - **`@dotkey/core`** — `.key` → `Deck`. Runs in browsers, Node, Deno, Bun and workers. `@dotkey/core/node` adds file/directory reading.
 - **`@dotkey/react`** — `Deck` → React elements. `<Keynote>` for the whole deck, or `KeynoteProvider` + `Stage` + `SlidePlayer`/`SlideView` + `ElementView` composed by hand.
+- **`@dotkey/vercel`** — full-screen Vercel-style controls around `<Keynote>`, including single-slide, grid, and continuous-scroll modes. It owns no parsing or rendering logic.
 - **`apps/demo`** — Vite playground, and the target both verification harnesses drive.
 
 ## Document model

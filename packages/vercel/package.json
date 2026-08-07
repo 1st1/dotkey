@@ -1,0 +1,50 @@
+{
+  "name": "@dotkey/vercel",
+  "version": "0.1.0",
+  "description": "Vercel-style presentation chrome for @dotkey/react.",
+  "keywords": ["keynote", "presentation", "slides", "react", "vercel", "viewer"],
+  "license": "MIT",
+  "author": "Yury Selivanov",
+  "homepage": "https://github.com/1st1/dotkey#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1st1/dotkey.git",
+    "directory": "packages/vercel"
+  },
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "engines": { "node": ">=18" },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": { "@dotkey/react": "workspace:*" },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.0"
+  }
+}

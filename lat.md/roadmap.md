@@ -32,9 +32,9 @@ An archive the parser does not understand becomes an `unsupported` element that 
 
 The alternative — dropping content — makes a parser bug indistinguishable from an author's choice.
 
-## Published as two packages
+## Published as three packages
 
-`@dotkey/core` and `@dotkey/react`, MIT. The name refers to the file extension rather than Apple's trademark, which the format name is used for only descriptively.
+`@dotkey/core`, `@dotkey/react`, and optional viewer chrome in `@dotkey/vercel`, all MIT. The first two remain brand-neutral; the Vercel-styled host is isolated so applications opt into its design explicitly.
 
 Nothing Apple-authored is redistributed: the vendored protobuf definitions are reverse-engineered interface descriptions (MIT, credited in `NOTICE.md`), and the font catalogue is factual availability data. Presentations used for testing are never committed.
 
