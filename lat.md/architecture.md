@@ -19,7 +19,7 @@ Six stages take a zip archive to pixels. Each stage is a directory in `packages/
 
 - **`@dotkey/core`** — `.key` → `Deck`. Runs in browsers, Node, Deno, Bun and workers. `@dotkey/core/node` adds file/directory reading.
 - **`@dotkey/react`** — `Deck` → React elements. `<Keynote>` for the whole deck, or `KeynoteProvider` + `Stage` + `SlidePlayer`/`SlideView` + `ElementView` composed by hand.
-- **`@dotkey/vercel`** — full-screen Vercel-style controls around `<Keynote>`, including single-slide, grid, and continuous-scroll modes. It owns no parsing or rendering logic.
+- **`@dotkey/vercel`** — Vercel-style controls around `<Keynote>`, including single-slide, grid, continuous-scroll, and browser fullscreen modes. It owns no parsing or rendering logic.
 - **`apps/demo`** — Vite playground, and the target both verification harnesses drive.
 
 ## Document model

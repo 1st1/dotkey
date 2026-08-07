@@ -15,8 +15,8 @@ import '@dotkey/vercel/styles.css';
 
 The component includes single-slide, grid and continuous-scroll views,
 build-aware previous/next controls, clickable progress markers, responsive
-layout, and the official Vercel logotype. Double-click a grid thumbnail to open
-that slide in the single-slide view.
+layout, fullscreen control, and the official Vercel logotype. Double-click a
+grid thumbnail to open that slide in the single-slide view.
 
 Use `mode`/`slide` for controlled state or `defaultMode`/`defaultSlide` for
 uncontrolled state. Pass renderer options through `keynoteProps`, and replace

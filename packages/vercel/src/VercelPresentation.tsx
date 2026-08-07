@@ -7,6 +7,7 @@ import {
 } from '@dotkey/react';
 import {
   useCallback,
+  useEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -40,6 +41,9 @@ export interface VercelPresentationProps {
   onLoad?: NonNullable<KeynoteProps['onLoad']>;
   /** Replace the official Vercel logotype with custom branding. */
   brand?: ReactNode;
+  /** Show the fullscreen control when the browser supports it. Default `true`. */
+  fullscreenButton?: boolean;
+  onFullscreenChange?: (fullscreen: boolean) => void;
   /** Props forwarded to the underlying `@dotkey/react` renderer. */
   keynoteProps?: ForwardedKeynoteProps;
   className?: string;
@@ -57,16 +61,34 @@ export function VercelPresentation({
   onSlideChange,
   onLoad,
   brand,
+  fullscreenButton = true,
+  onFullscreenChange,
   keynoteProps,
   className,
   style,
 }: VercelPresentationProps) {
+  const root = useRef<HTMLDivElement | null>(null);
   const controls = useRef<KeynoteControls | null>(null);
   const [internalMode, setInternalMode] = useState<KeynoteMode>(defaultMode);
   const [internalSlide, setInternalSlide] = useState(defaultSlide);
   const [slideCount, setSlideCount] = useState(0);
+  const [fullscreenAvailable, setFullscreenAvailable] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
   const activeMode = mode ?? internalMode;
   const currentSlide = slide ?? internalSlide;
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const active = document.fullscreenElement === root.current;
+      setFullscreen(active);
+      onFullscreenChange?.(active);
+    };
+
+    setFullscreenAvailable(document.fullscreenEnabled);
+    handleFullscreenChange();
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, [onFullscreenChange]);
 
   const changeMode = useCallback(
     (next: KeynoteMode) => {
@@ -102,14 +124,28 @@ export function VercelPresentation({
 
   const rootClassName = ['dotkey-vercel', className].filter(Boolean).join(' ');
 
+  const toggleFullscreen = useCallback(() => {
+    void (async () => {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await root.current?.requestFullscreen();
+      } catch {
+        // Browsers may reject fullscreen when permission or user activation is absent.
+      }
+    })();
+  }, []);
+
   return (
-    <div className={rootClassName} style={style}>
+    <div ref={root} className={rootClassName} style={style}>
       <Header
         current={currentSlide}
         total={Math.max(0, slideCount - 1)}
         mode={activeMode}
         onModeChange={changeMode}
         brand={brand}
+        fullscreen={fullscreen}
+        showFullscreen={fullscreenButton && fullscreenAvailable}
+        onToggleFullscreen={toggleFullscreen}
       />
 
       <main
@@ -173,12 +209,18 @@ function Header({
   mode,
   onModeChange,
   brand,
+  fullscreen,
+  showFullscreen,
+  onToggleFullscreen,
 }: {
   current: number;
   total: number;
   mode: KeynoteMode;
   onModeChange: (mode: KeynoteMode) => void;
   brand?: ReactNode;
+  fullscreen: boolean;
+  showFullscreen: boolean;
+  onToggleFullscreen: () => void;
 }) {
   return (
     <header className="dotkey-vercel__header">
@@ -189,6 +231,17 @@ function Header({
           <ViewButton label="Grid" mode="grid" activeMode={mode} onSelect={onModeChange} />
           <ViewButton label="Continuous scroll" mode="scroll" activeMode={mode} onSelect={onModeChange} />
         </nav>
+        {showFullscreen ? (
+          <button
+            type="button"
+            className="dotkey-vercel__fullscreen-button"
+            aria-label={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            title={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            onClick={onToggleFullscreen}
+          >
+            <FullscreenIcon active={fullscreen} />
+          </button>
+        ) : null}
         <div className="dotkey-vercel__counter" aria-live="polite">
           <span>{formatCount(current)}</span>
           <span className="dotkey-vercel__counter-separator">/</span>
@@ -196,6 +249,18 @@ function Header({
         </div>
       </div>
     </header>
+  );
+}
+
+function FullscreenIcon({ active }: { active: boolean }) {
+  return active ? (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M6 2v4H2M10 2v4h4M6 14v-4H2M10 14v-4h4" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" />
+    </svg>
   );
 }
 

@@ -1,6 +1,7 @@
 .dotkey-vercel,
 .dotkey-vercel * { box-sizing: border-box; }
 .dotkey-vercel { display:grid; grid-template-rows:52px minmax(0,1fr) 76px; width:100%; height:100dvh; min-width:320px; color:#ededed; background:#000; font-family:Arial,Helvetica,sans-serif; font-synthesis:none; text-rendering:optimizeLegibility; }
+.dotkey-vercel:fullscreen { height:100%; }
 .dotkey-vercel button { font:inherit; }
 .dotkey-vercel__header,.dotkey-vercel__footer { position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between; padding:0 28px; background:#000; }
 .dotkey-vercel__brand { display:block; width:82px; height:auto; }
@@ -12,6 +13,10 @@
 .dotkey-vercel__view-button--active { color:#ededed; background:#242424; }
 .dotkey-vercel__view-button:focus-visible,.dotkey-vercel__navigation button:focus-visible { outline:2px solid #ededed; outline-offset:2px; }
 .dotkey-vercel__view-button svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.2; }
+.dotkey-vercel__fullscreen-button { display:grid; place-items:center; width:32px; height:32px; padding:0; border:1px solid #222; border-radius:8px; color:#777; background:#090909; cursor:pointer; transition:border-color 140ms ease,color 140ms ease,background 140ms ease; }
+.dotkey-vercel__fullscreen-button:hover { border-color:#3a3a3a; color:#ededed; background:#111; }
+.dotkey-vercel__fullscreen-button:focus-visible { outline:2px solid #ededed; outline-offset:2px; }
+.dotkey-vercel__fullscreen-button svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.2; }
 .dotkey-vercel__counter { display:flex; align-items:center; gap:10px; color:#888; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size:11.5px; font-weight:500; font-variant-numeric:tabular-nums; letter-spacing:.23em; }
 .dotkey-vercel__counter-separator { color:#555; }
 .dotkey-vercel__deck { min-width:0; min-height:0; overflow:hidden; background:#000; }
@@ -36,6 +41,7 @@
   .dotkey-vercel__brand { width:74px; }
   .dotkey-vercel__header-controls { gap:12px; }
   .dotkey-vercel__view-button { width:25px; height:24px; }
+  .dotkey-vercel__fullscreen-button { width:28px; height:28px; border-radius:7px; }
   .dotkey-vercel__deck--browse { padding:12px; }
   .dotkey-vercel__progress { gap:5px; width:calc(100% - 104px); max-width:240px; }
   .dotkey-vercel__progress-segment { height:4px; }

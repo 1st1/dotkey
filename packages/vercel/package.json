@@ -1,6 +1,6 @@
 {
   "name": "@dotkey/vercel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vercel-style presentation chrome for @dotkey/react.",
   "keywords": ["keynote", "presentation", "slides", "react", "vercel", "viewer"],
   "license": "MIT",
