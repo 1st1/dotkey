@@ -1,11 +1,21 @@
 import type { KeynoteDocument } from '@dotkey/core';
-import { Keynote, type KeynoteControls, type KeynoteMode } from '@dotkey/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Preview } from '@dotkey/preview';
+import { Keynote } from '@dotkey/react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+} from 'react';
+
+import './app.css';
 
 /**
  * A deck to open on load, if one has been provided. Presentations are not
  * committed, so this is normally absent and the file picker is the way in.
- * Copy any `.key` to `apps/demo/public/sample.key` to have it open by default.
+ * Copy any `.key` to `apps/demo/public/sample.key` to use the bare route.
  */
 const SAMPLE = '/sample.key';
 
@@ -25,7 +35,7 @@ function bareOptions(): { index: number; animate: boolean } | null {
 export function App() {
   const bare = bareOptions();
   if (bare) return <BareSlide index={bare.index} animate={bare.animate} />;
-  return <Workbench />;
+  return <KeynotePreview />;
 }
 
 function BareSlide({ index, animate }: { index: number; animate: boolean }) {
@@ -69,162 +79,80 @@ function BareSlide({ index, animate }: { index: number; animate: boolean }) {
   );
 }
 
-function Workbench() {
-  const [source, setSource] = useState<string | File | null>(null);
-  const [missing, setMissing] = useState(false);
-  const [mode, setMode] = useState<KeynoteMode>('slide');
-  const [slide, setSlide] = useState(0);
-  const [animate, setAnimate] = useState(true);
-  const [stage, setStage] = useState({ stage: 0, count: 0 });
-  const [document_, setDocument] = useState<KeynoteDocument | null>(null);
-  const controls = useRef<KeynoteControls | null>(null);
+function KeynotePreview() {
+  const [source, setSource] = useState<File | null>(null);
 
-  const onLoad = useCallback((doc: KeynoteDocument) => setDocument(doc), []);
+  if (source) return <Preview src={source} />;
+  return <KeynoteDropZone onSelect={setSource} />;
+}
 
-  // Try the optional bundled deck once; fall back to the picker if absent.
-  // A dev server answers a missing file with the SPA fallback rather than a
-  // 404, so the content type is what actually says whether the deck is there.
-  useEffect(() => {
-    let cancelled = false;
-    void fetch(SAMPLE, { method: 'HEAD' })
-      .then((response) => {
-        if (cancelled) return;
-        const html = response.headers.get('content-type')?.includes('text/html');
-        if (response.ok && !html) setSource(SAMPLE);
-        else setMissing(true);
-      })
-      .catch(() => !cancelled && setMissing(true));
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-  const onStageChange = useCallback(
-    (value: number, count: number) =>
-      // Bail out when nothing changed, so a new object never forces a re-render.
-      setStage((previous) =>
-        previous.stage === value && previous.count === count
-          ? previous
-          : { stage: value, count },
-      ),
-    [],
+function KeynoteDropZone({ onSelect }: { onSelect: (file: File) => void }) {
+  const [dragging, setDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const dragDepth = useRef(0);
+
+  const select = useCallback(
+    (file: File | undefined) => {
+      if (!file) return;
+      if (!file.name.toLowerCase().endsWith('.key')) {
+        setError('Choose a Keynote .key file.');
+        return;
+      }
+
+      setError(null);
+      onSelect(file);
+    },
+    [onSelect],
   );
 
-  // Expose the parsed deck for scripted verification and quick console poking.
-  useEffect(() => {
-    (window as unknown as { keynote?: KeynoteDocument | null }).keynote = document_;
-  }, [document_]);
+  const onDragEnter = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    dragDepth.current += 1;
+    setDragging(true);
+  };
 
-  const total = document_?.deck.slides.length ?? 0;
-  const active = document_?.deck.slides[slide];
+  const onDragLeave = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    dragDepth.current -= 1;
+    if (dragDepth.current <= 0) {
+      dragDepth.current = 0;
+      setDragging(false);
+    }
+  };
+
+  const onDrop = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    dragDepth.current = 0;
+    setDragging(false);
+    select(event.dataTransfer.files[0]);
+  };
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    select(event.target.files?.[0]);
+  };
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr', height: '100%' }}>
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          padding: '10px 14px',
-          borderBottom: '1px solid #232326',
-          fontSize: 13,
-          flexWrap: 'wrap',
-        }}
-      >
-        <strong style={{ fontWeight: 600 }}>@dotkey/react</strong>
-
-        <input
-          type="file"
-          accept=".key"
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            if (file) {
-              setSlide(0);
-              setSource(file);
-            }
-          }}
-          style={{ fontSize: 12 }}
-        />
-
-        <select
-          value={mode}
-          onChange={(event) => setMode(event.target.value as KeynoteMode)}
-          style={{ fontSize: 12 }}
-        >
-          <option value="slide">Slide</option>
-          <option value="scroll">Scroll</option>
-          <option value="grid">Grid</option>
-        </select>
-
-        <label style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <input
-            type="checkbox"
-            checked={animate}
-            onChange={(event) => setAnimate(event.target.checked)}
-          />
-          Animate
+    <main
+      className={`keynote-drop-page${dragging ? ' is-dragging' : ''}`}
+      onDragEnter={onDragEnter}
+      onDragOver={(event) => event.preventDefault()}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+    >
+      <section className="keynote-drop-target" aria-label="Open a Keynote presentation">
+        <svg className="keynote-drop-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <rect x="7" y="5" width="34" height="38" rx="5" />
+          <path d="M15 31 22 24l5 5 4-4 5 6" />
+          <circle cx="31" cy="16" r="3" />
+        </svg>
+        <h1>Drop a Keynote file</h1>
+        <p>Drag and drop a <code>.key</code> presentation here</p>
+        <label className="keynote-file-button">
+          Choose file
+          <input type="file" accept=".key" onChange={onChange} />
         </label>
-
-        {mode === 'slide' && total > 0 ? (
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <button type="button" onClick={() => controls.current?.retreat()}>
-              ‹
-            </button>
-            <span style={{ minWidth: 72, textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>
-              {slide + 1} / {total}
-            </span>
-            <button type="button" onClick={() => controls.current?.advance()}>
-              ›
-            </button>
-            {stage.count > 0 ? (
-              <span style={{ opacity: 0.7, fontVariantNumeric: 'tabular-nums' }}>
-                build {stage.stage} / {stage.count}
-              </span>
-            ) : null}
-          </span>
-        ) : null}
-
-        {active && mode === 'slide' ? (
-          <span style={{ opacity: 0.5 }}>
-            {active.builds.length} builds
-            {active.transition ? ` · ${active.transition.kind} ${active.transition.duration}s` : ''}
-          </span>
-        ) : null}
-
-        {document_ ? (
-          <span style={{ opacity: 0.55, marginLeft: 'auto' }}>
-            iWork {document_.deck.metadata.fileFormatVersion} · {document_.deck.metadata.theme} ·{' '}
-            {document_.deck.size.width}×{document_.deck.size.height} ·{' '}
-            {Object.keys(document_.deck.resources).length} media ·{' '}
-            {document_.deck.fonts.length} fonts
-            {document_.warnings.length > 0 ? ` · ${document_.warnings.length} warnings` : ''}
-          </span>
-        ) : null}
-      </header>
-
-      <main
-        style={{
-          overflow: mode === 'slide' ? 'hidden' : 'auto',
-          padding: mode === 'slide' ? 0 : 16,
-        }}
-      >
-        {source === null ? (
-          <div style={{ display: 'grid', placeItems: 'center', height: '100%', opacity: 0.6 }}>
-            {missing ? 'Choose a .key file to open.' : 'Looking for a deck…'}
-          </div>
-        ) : (
-        <Keynote
-          src={source}
-          mode={mode}
-          slide={mode === 'slide' ? slide : undefined}
-          onSlideChange={setSlide}
-          onStageChange={onStageChange}
-          onLoad={onLoad}
-          controlsRef={controls}
-          animate={animate}
-          style={{ height: mode === 'slide' ? '100%' : undefined }}
-        />
-        )}
-      </main>
-    </div>
+        {error ? <p className="keynote-drop-error" role="alert">{error}</p> : null}
+      </section>
+    </main>
   );
 }

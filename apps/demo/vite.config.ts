@@ -13,6 +13,7 @@ export default defineConfig({
       '@dotkey/core/node': resolve('../../packages/core/src/node.ts'),
       '@dotkey/core/fonts': resolve('../../packages/core/src/fonts/index.ts'),
       '@dotkey/core': resolve('../../packages/core/src/index.ts'),
+      '@dotkey/preview': resolve('../../packages/preview/src/index.ts'),
       '@dotkey/react': resolve('../../packages/react/src/index.ts'),
     },
   },

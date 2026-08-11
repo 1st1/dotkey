@@ -24,6 +24,9 @@ importers:
       '@dotkey/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@dotkey/preview':
+        specifier: workspace:*
+        version: link:../../packages/preview
       '@dotkey/react':
         specifier: workspace:*
         version: link:../../packages/react

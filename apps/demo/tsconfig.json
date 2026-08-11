@@ -16,6 +16,9 @@
       "@dotkey/react": [
         "../../packages/react/src/index.ts"
       ],
+      "@dotkey/preview": [
+        "../../packages/preview/src/index.ts"
+      ],
       "@dotkey/core": [
         "../../packages/core/src/index.ts"
       ]

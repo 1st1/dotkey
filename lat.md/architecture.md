@@ -21,7 +21,7 @@ Six stages take a zip archive to pixels. Each stage is a directory in `packages/
 - **`@dotkey/react`** — `Deck` → React elements. `<Keynote>` for the whole deck, or `KeynoteProvider` + `Stage` + `SlidePlayer`/`SlideView` + `ElementView` composed by hand.
 - **`@dotkey/preview`** — brand-neutral controls around `<Keynote>`, including single-slide, grid, continuous-scroll, and browser fullscreen modes.
 - **`@dotkey/vercel`** — a thin `VercelPreview` wrapper that provides the official Vercel logotype to `Preview`'s brand slot.
-- **`apps/demo`** — Vite playground, and the target both verification harnesses drive.
+- **`apps/demo`** — a drag-and-drop `.key` entry point for `Preview`; its `?bare=` route remains the target both verification harnesses drive.
 
 ## Document model
 
