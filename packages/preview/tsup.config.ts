@@ -7,6 +7,5 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   target: 'es2021',
-  external: ['react', 'react-dom', '@dotkey/preview'],
-  loader: { '.svg': 'dataurl' },
+  external: ['react', 'react-dom', '@dotkey/react'],
 });

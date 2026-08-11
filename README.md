@@ -50,7 +50,8 @@ with that model is up to it.
 | --- | --- | --- |
 | [`@dotkey/core`](packages/core) | `.key` → `Deck` (plain JSON) | browsers, Node, Deno, Bun, workers |
 | [`@dotkey/react`](packages/react) | `Deck` → React elements | React ≥ 18 |
-| [`@dotkey/vercel`](packages/vercel) | Vercel-style full-screen viewer chrome | React ≥ 18 |
+| [`@dotkey/preview`](packages/preview) | Full-screen presentation GUI | React ≥ 18 |
+| [`@dotkey/vercel`](packages/vercel) | Vercel branding for `Preview` | React ≥ 18 |
 
 The split is deliberate: parsing has no opinion about rendering. You can parse
 on a server, cache the JSON, and render it with React, canvas, or a PDF writer.

@@ -1,6 +1,6 @@
 # Architecture
 
-Read Apple Keynote `.key` files and render them in React. Three packages separate parsing, rendering, and optional presentation chrome so the document model and renderer remain independent of any one viewer design.
+Read Apple Keynote `.key` files and render them in React. Four packages separate parsing, rendering, presentation GUI, and optional branding so each layer remains independently reusable.
 
 ## Pipeline
 
@@ -15,11 +15,12 @@ Six stages take a zip archive to pixels. Each stage is a directory in `packages/
 
 ## Packages
 
-`@dotkey/core` is isomorphic, `@dotkey/react` renders its model, and `@dotkey/vercel` is optional host chrome composed entirely from the public React API.
+`@dotkey/core` is isomorphic, `@dotkey/react` renders its model, `@dotkey/preview` supplies a brand-neutral GUI, and `@dotkey/vercel` only adds Vercel branding.
 
 - **`@dotkey/core`** — `.key` → `Deck`. Runs in browsers, Node, Deno, Bun and workers. `@dotkey/core/node` adds file/directory reading.
 - **`@dotkey/react`** — `Deck` → React elements. `<Keynote>` for the whole deck, or `KeynoteProvider` + `Stage` + `SlidePlayer`/`SlideView` + `ElementView` composed by hand.
-- **`@dotkey/vercel`** — Vercel-style controls around `<Keynote>`, including single-slide, grid, continuous-scroll, and browser fullscreen modes. It owns no parsing or rendering logic.
+- **`@dotkey/preview`** — brand-neutral controls around `<Keynote>`, including single-slide, grid, continuous-scroll, and browser fullscreen modes.
+- **`@dotkey/vercel`** — a thin `VercelPreview` wrapper that provides the official Vercel logotype to `Preview`'s brand slot.
 - **`apps/demo`** — Vite playground, and the target both verification harnesses drive.
 
 ## Document model

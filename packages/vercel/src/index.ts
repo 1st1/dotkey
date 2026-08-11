@@ -1,4 +1,6 @@
 export {
+  VercelPreview,
+  type VercelPreviewProps,
   VercelPresentation,
   type VercelPresentationProps,
-} from './VercelPresentation.jsx';
+} from './VercelPreview.jsx';

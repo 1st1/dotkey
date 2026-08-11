@@ -14,7 +14,6 @@ import {
   type ReactNode,
 } from 'react';
 
-import vercelLogo from './vercel-logotype.svg';
 import './styles.css';
 
 type ForwardedKeynoteProps = Omit<
@@ -30,7 +29,7 @@ type ForwardedKeynoteProps = Omit<
   | 'style'
 >;
 
-export interface VercelPresentationProps {
+export interface PreviewProps {
   src: KeynoteSource;
   mode?: KeynoteMode;
   defaultMode?: KeynoteMode;
@@ -39,7 +38,7 @@ export interface VercelPresentationProps {
   defaultSlide?: number;
   onSlideChange?: NonNullable<KeynoteProps['onSlideChange']>;
   onLoad?: NonNullable<KeynoteProps['onLoad']>;
-  /** Replace the official Vercel logotype with custom branding. */
+  /** Optional content placed at the leading edge of the header. */
   brand?: ReactNode;
   /** Show the fullscreen control when the browser supports it. Default `true`. */
   fullscreenButton?: boolean;
@@ -50,8 +49,8 @@ export interface VercelPresentationProps {
   style?: CSSProperties;
 }
 
-/** Full-screen Vercel-style chrome around the `@dotkey/react` renderer. */
-export function VercelPresentation({
+/** Full-screen presentation GUI around the `@dotkey/react` renderer. */
+export function Preview({
   src,
   mode,
   defaultMode = 'slide',
@@ -66,7 +65,7 @@ export function VercelPresentation({
   keynoteProps,
   className,
   style,
-}: VercelPresentationProps) {
+}: PreviewProps) {
   const root = useRef<HTMLDivElement | null>(null);
   const controls = useRef<KeynoteControls | null>(null);
   const [internalMode, setInternalMode] = useState<KeynoteMode>(defaultMode);
@@ -122,7 +121,7 @@ export function VercelPresentation({
     [changeMode],
   );
 
-  const rootClassName = ['dotkey-vercel', className].filter(Boolean).join(' ');
+  const rootClassName = ['dotkey-preview', className].filter(Boolean).join(' ');
 
   const toggleFullscreen = useCallback(() => {
     void (async () => {
@@ -151,8 +150,8 @@ export function VercelPresentation({
       <main
         className={
           activeMode === 'slide'
-            ? 'dotkey-vercel__deck'
-            : 'dotkey-vercel__deck dotkey-vercel__deck--browse'
+            ? 'dotkey-preview__deck'
+            : 'dotkey-preview__deck dotkey-preview__deck--browse'
         }
         aria-label="Presentation"
         onDoubleClick={
@@ -181,7 +180,7 @@ export function VercelPresentation({
           controlsRef={controls}
           onLoad={handleLoad}
           onSlideChange={changeSlide}
-          className="dotkey-vercel__keynote"
+          className="dotkey-preview__keynote"
           thumbnailWidth={keynoteProps?.thumbnailWidth ?? 260}
           loading={keynoteProps?.loading ?? <Status>Loading presentation…</Status>}
           error={
@@ -223,10 +222,10 @@ function Header({
   onToggleFullscreen: () => void;
 }) {
   return (
-    <header className="dotkey-vercel__header">
-      {brand ?? <img className="dotkey-vercel__brand" src={vercelLogo} alt="Vercel" />}
-      <div className="dotkey-vercel__header-controls">
-        <nav className="dotkey-vercel__view-switcher" aria-label="Presentation view">
+    <header className="dotkey-preview__header">
+      <div className="dotkey-preview__brand">{brand}</div>
+      <div className="dotkey-preview__header-controls">
+        <nav className="dotkey-preview__view-switcher" aria-label="Presentation view">
           <ViewButton label="Single slide" mode="slide" activeMode={mode} onSelect={onModeChange} />
           <ViewButton label="Grid" mode="grid" activeMode={mode} onSelect={onModeChange} />
           <ViewButton label="Continuous scroll" mode="scroll" activeMode={mode} onSelect={onModeChange} />
@@ -234,7 +233,7 @@ function Header({
         {showFullscreen ? (
           <button
             type="button"
-            className="dotkey-vercel__fullscreen-button"
+            className="dotkey-preview__fullscreen-button"
             aria-label={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             title={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             onClick={onToggleFullscreen}
@@ -242,9 +241,9 @@ function Header({
             <FullscreenIcon active={fullscreen} />
           </button>
         ) : null}
-        <div className="dotkey-vercel__counter" aria-live="polite">
+        <div className="dotkey-preview__counter" aria-live="polite">
           <span>{formatCount(current)}</span>
-          <span className="dotkey-vercel__counter-separator">/</span>
+          <span className="dotkey-preview__counter-separator">/</span>
           <span>{formatCount(total)}</span>
         </div>
       </div>
@@ -281,8 +280,8 @@ function ViewButton({
       type="button"
       className={
         active
-          ? 'dotkey-vercel__view-button dotkey-vercel__view-button--active'
-          : 'dotkey-vercel__view-button'
+          ? 'dotkey-preview__view-button dotkey-preview__view-button--active'
+          : 'dotkey-preview__view-button'
       }
       aria-label={label}
       aria-pressed={active}
@@ -336,9 +335,9 @@ function Footer({
   navigation: boolean;
 }) {
   return (
-    <footer className="dotkey-vercel__footer">
+    <footer className="dotkey-preview__footer">
       <nav
-        className="dotkey-vercel__progress"
+        className="dotkey-preview__progress"
         aria-label={`Slide navigation, currently ${current + 1} of ${total}`}
       >
         {Array.from({ length: total }, (_, index) => (
@@ -346,8 +345,8 @@ function Footer({
             type="button"
             className={
               index === current
-                ? 'dotkey-vercel__progress-segment dotkey-vercel__progress-segment--active'
-                : 'dotkey-vercel__progress-segment'
+                ? 'dotkey-preview__progress-segment dotkey-preview__progress-segment--active'
+                : 'dotkey-preview__progress-segment'
             }
             aria-label={`Go to slide ${index + 1}`}
             aria-current={index === current ? 'page' : undefined}
@@ -357,7 +356,7 @@ function Footer({
         ))}
       </nav>
       {navigation ? (
-        <nav className="dotkey-vercel__navigation" aria-label="Slide navigation">
+        <nav className="dotkey-preview__navigation" aria-label="Slide navigation">
           <button type="button" onClick={onPrevious} aria-label="Previous slide">
             <Chevron direction="left" />
           </button>
@@ -366,7 +365,7 @@ function Footer({
           </button>
         </nav>
       ) : (
-        <div className="dotkey-vercel__navigation-placeholder" aria-hidden="true" />
+        <div className="dotkey-preview__navigation-placeholder" aria-hidden="true" />
       )}
     </footer>
   );
@@ -383,7 +382,7 @@ function Chevron({ direction }: { direction: 'left' | 'right' }) {
 function Status({ children, error = false }: { children: ReactNode; error?: boolean }) {
   return (
     <div
-      className={error ? 'dotkey-vercel__status dotkey-vercel__status--error' : 'dotkey-vercel__status'}
+      className={error ? 'dotkey-preview__status dotkey-preview__status--error' : 'dotkey-preview__status'}
       role={error ? 'alert' : 'status'}
     >
       {children}

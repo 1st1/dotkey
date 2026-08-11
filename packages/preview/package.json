@@ -1,15 +1,15 @@
 {
-  "name": "@dotkey/vercel",
-  "version": "0.2.0",
-  "description": "Vercel-branded presentation preview for @dotkey/preview.",
-  "keywords": ["keynote", "presentation", "slides", "react", "vercel", "viewer"],
+  "name": "@dotkey/preview",
+  "version": "0.1.0",
+  "description": "Full-screen presentation GUI for @dotkey/react.",
+  "keywords": ["keynote", "presentation", "slides", "react", "preview", "viewer"],
   "license": "MIT",
   "author": "Yury Selivanov",
   "homepage": "https://github.com/1st1/dotkey#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/1st1/dotkey.git",
-    "directory": "packages/vercel"
+    "directory": "packages/preview"
   },
   "type": "module",
   "sideEffects": ["*.css"],
@@ -33,7 +33,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run build"
   },
-  "dependencies": { "@dotkey/preview": "workspace:*" },
+  "dependencies": { "@dotkey/react": "workspace:*" },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"

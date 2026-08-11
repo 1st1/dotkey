@@ -32,9 +32,9 @@ An archive the parser does not understand becomes an `unsupported` element that 
 
 The alternative — dropping content — makes a parser bug indistinguishable from an author's choice.
 
-## Published as three packages
+## Published as four packages
 
-`@dotkey/core`, `@dotkey/react`, and optional viewer chrome in `@dotkey/vercel`, all MIT. The first two remain brand-neutral; the Vercel-styled host is isolated so applications opt into its design explicitly.
+`@dotkey/core`, `@dotkey/react`, `@dotkey/preview`, and `@dotkey/vercel`, all MIT. Parsing, rendering, GUI, and branded composition are separate publication boundaries so consumers pay for and identify with only the layers they choose.
 
 Nothing Apple-authored is redistributed: the vendored protobuf definitions are reverse-engineered interface descriptions (MIT, credited in `NOTICE.md`), and the font catalogue is factual availability data. Presentations used for testing are never committed.
 
